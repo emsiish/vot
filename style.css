@@ -1,0 +1,68 @@
+body {
+    background-color: #f1f1f1;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    color: #333;
+  }
+  
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .jumbotron {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 80px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    width: 95%;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .form-control {
+    border: none;
+    border-radius: 30px;
+    box-shadow: none;
+    background-color: #f2f2f2;
+    font-size: 1.2rem;
+    padding: 15px 20px;
+  }
+  
+  .form-control:focus {
+    box-shadow: none;
+    background-color: #f9f9f9;
+  }
+  
+  ::placeholder {
+    color: #bbb;
+    font-size: 14px;
+  }
+  
+  .btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+    border-radius: 30px;
+    padding: 12px 40px;
+  }
+  
+  .btn-success:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+  }
+  
+  #tasks {
+    background-color: #fff;
+    padding: 20px;
+    margin-top: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  #tasks h4,
+  #tasks p {
+    color: #555;
+    font-size: 14px;
+    line-height: 1.5;
+  }
