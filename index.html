@@ -73,41 +73,69 @@ body {
   }
 </style>
 <script>
-        var callAPI = (task, description)=>{
-	          var dueDate = document.getElementById('dueDate').value;
+        var callAPI = (task, description) => {
+            var dueDate = document.getElementById('dueDate').value;
 
             var myHeaders = new Headers();
-            // add content type header to object
             myHeaders.append("Content-Type", "application/json");
-            // using built in JSON utility package turn object to string and store in a variable
-            var raw = JSON.stringify({"task":task,"description":description, "dueDate":dueDate});
-            // create a JSON object with parameters for API call and store in a variable
+            var raw = JSON.stringify({
+                "task": task,
+                "description": description,
+                "dueDate": dueDate
+            });
             var requestOptions = {
                 method: 'POST',
                 headers: myHeaders,
                 body: raw,
                 redirect: 'follow'
             };
-            // make API call with parameters and use promises to get response
+
             fetch("https://7lvdl2bcmi.execute-api.us-east-1.amazonaws.com/dev", requestOptions)
-    		    .then(response => response.json()) // Parse the response as JSON
-    		    .then(result => {
-      			var tasksElement = document.getElementById('tasks');
-      			tasksElement.innerHTML = ""; // Clear the tasks element
-      			var taskList = JSON.parse(result.body);
-        		taskList.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
-        		taskList.forEach(task => {
-            			var taskElement = document.createElement('div');
-            			taskElement.innerHTML = "<h4>" + task.task + "</h4><p>" + task.description + "</p><p><strong>Due: " + formatDate(task.dueDate) + "</strong></p><hr>"; 
-            			tasksElement.appendChild(taskElement);
-        		});
-    		})
-    		.catch(error => console.log('error', error));
-	}
-function formatDate(dateString) {
-    var options = { year: 'numeric', month: 'long', day: 'numeric' };
-    return new Date(dateString).toLocaleDateString(undefined, options);
-}
+                .then(response => response.json())
+                .then(result => {
+                    var tasksElement = document.getElementById('tasks');
+                    tasksElement.innerHTML = "";
+                    var taskList = JSON.parse(result.body);
+                    taskList.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
+                    taskList.forEach(task => {
+                        var taskElement = document.createElement('div');
+                        taskElement.innerHTML = "<h4>" + task.task + "</h4><p>" + task.description + "</p><p><strong>Due: " + formatDate(task.dueDate) + "</strong></p><hr>";
+                        tasksElement.appendChild(taskElement);
+                    });
+                })
+                .catch(error => console.log('error', error));
+        }
+
+        function formatDate(dateString) {
+            var options = {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            };
+            return new Date(dateString).toLocaleDateString(undefined, options);
+        }
+
+        function showAllTasks() {
+            var requestOptions = {
+                method: 'GET',
+                redirect: 'follow'
+            };
+
+            fetch("https://7lvdl2bcmi.execute-api.us-east-1.amazonaws.com/dev", requestOptions)
+                .then(response => response.json())
+                .then(result => {
+                    var tasksElement = document.getElementById('tasks');
+                    tasksElement.innerHTML = "";
+                    var taskList = JSON.parse(result.body);
+                    taskList.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
+                    taskList.forEach(task => {
+                        var taskElement = document.createElement('div');
+                        taskElement.innerHTML = "<h4>" + task.task + "</h4><p>" + task.description + "</p><p><strong>Due: " + formatDate(task.dueDate) + "</strong></p><hr>";
+                        tasksElement.appendChild(taskElement);
+                    });
+                })
+                .catch(error => console.log('error', error));
+        }
     </script>
 </head>
 <body>
@@ -122,7 +150,8 @@ function formatDate(dateString) {
         <br><br>
 	<input id="dueDate" class="form-control" type="date">
         <br><br>
-        <button id="add" class="btn btn-success" onclick="callAPI(document.getElementById('task').value, document.getElementById('description').value)">Add</button> 
+        <button id="add" class="btn btn-success" onclick="callAPI(document.getElementById('task').value, document.getElementById('description').value)">Add</button>
+        <button id="showAll" class="btn btn-success" onclick="showAllTasks()">Show All</button>
     </div>
     <div id="tasks">
 
