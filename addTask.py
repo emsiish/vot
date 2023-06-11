@@ -8,25 +8,20 @@ def lambda_handler(event, context):
     try:
         task = event['task']
         description = event['description']
-        due_date = event['dueDate']
+        due_date = event['dueDate']  # Retrieve the due date from the event payload
 
         # Add task to DynamoDB table
         table.put_item(
             Item={
                 'ID': task,
                 'description': description,
-                'dueDate': due_date
+                'dueDate': due_date  # Store the due date in DynamoDB
             }
         )
 
-        response = table.scan()
-        items = response.get('Items', [])
-
-        task_list = [{'task': item['ID'], 'description': item['description'], 'dueDate': item['dueDate']} for item in items]
-
         return {
             'statusCode': 200,
-            'body': json.dumps(task_list)
+            'body': json.dumps("You successfully added task: " + task)
         }
     except Exception as e:
         return {
