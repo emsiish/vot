@@ -2,24 +2,132 @@
 <html>
 <head>
   <title>To-Do List App</title>
-  <link rel="stylesheet" href="style.css">
+<style>
+body {
+    background-color: #f1f1f1;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    color: #333;
+  }
+  
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .jumbotron {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 80px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    width: 95%;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .form-control {
+    border: none;
+    border-radius: 30px;
+    box-shadow: none;
+    background-color: #f2f2f2;
+    font-size: 1.2rem;
+    padding: 15px 20px;
+  }
+  
+  .form-control:focus {
+    box-shadow: none;
+    background-color: #f9f9f9;
+  }
+  
+  ::placeholder {
+    color: #bbb;
+    font-size: 14px;
+  }
+  
+  .btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+    border-radius: 30px;
+    padding: 12px 40px;
+  }
+  
+  .btn-success:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+  }
+  
+  #tasks {
+    background-color: #fff;
+    padding: 20px;
+    margin-top: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  #tasks h4,
+  #tasks p {
+    color: #555;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+</style>
+<script>
+        var callAPI = (task, description)=>{
+	          var dueDate = document.getElementById('dueDate').value;
+
+            var myHeaders = new Headers();
+            // add content type header to object
+            myHeaders.append("Content-Type", "application/json");
+            // using built in JSON utility package turn object to string and store in a variable
+            var raw = JSON.stringify({"task":task,"description":description, "dueDate":dueDate});
+            // create a JSON object with parameters for API call and store in a variable
+            var requestOptions = {
+                method: 'POST',
+                headers: myHeaders,
+                body: raw,
+                redirect: 'follow'
+            };
+            // make API call with parameters and use promises to get response
+            fetch("https://7lvdl2bcmi.execute-api.us-east-1.amazonaws.com/dev", requestOptions)
+    		    .then(response => response.json()) // Parse the response as JSON
+    		    .then(result => {
+      			var tasksElement = document.getElementById('tasks');
+      			tasksElement.innerHTML = ""; // Clear the tasks element
+      			var taskList = JSON.parse(result.body);
+        		taskList.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
+        		taskList.forEach(task => {
+            			var taskElement = document.createElement('div');
+            			taskElement.innerHTML = "<h4>" + task.task + "</h4><p>" + task.description + "</p><p><strong>Due: " + formatDate(task.dueDate) + "</strong></p><hr>"; 
+            			tasksElement.appendChild(taskElement);
+        		});
+    		})
+    		.catch(error => console.log('error', error));
+	}
+function formatDate(dateString) {
+    var options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+}
+    </script>
 </head>
 <body>
-  
-  <div class="container" id="signup">
+  <div class="container">
     <br>
     <div class="jumbotron">
-        <h1 class="display-4">Login</h1>
+        <h1 class="display-4">Add Task</h1>
         <br>
-        <input type="text" id="email" class="form-control" placeholder="Email">
+        <input id="task" class="form-control" placeholder="Task">
         <br><br><br>
-        <input type="password" id="password" class="form-control" placeholder="Password">        
+        <textarea id ="description" class="form-control" placeholder="Description if needed"></textarea>
         <br><br>
-        <button id="login" class="btn btn-success">Login</button>
+	<input id="dueDate" class="form-control" type="date">
+        <br><br>
+        <button id="add" class="btn btn-success" onclick="callAPI(document.getElementById('task').value, document.getElementById('description').value)">Add</button> 
     </div>
-  </div>
+    <div id="tasks">
 
-  <script type="module" src="firebase.js"></script>
-  <script type="module" src="app.js"></script>
+    </div>
+</div>
+</div>
 </body>
 </html>
