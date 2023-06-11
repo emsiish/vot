@@ -91,19 +91,9 @@ body {
             };
 
             fetch("https://7lvdl2bcmi.execute-api.us-east-1.amazonaws.com/dev", requestOptions)
-                .then(response => response.json())
-                .then(result => {
-                    var tasksElement = document.getElementById('tasks');
-                    tasksElement.innerHTML = "";
-                    var taskList = JSON.parse(result.body);
-                    taskList.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
-                    taskList.forEach(task => {
-                        var taskElement = document.createElement('div');
-                        taskElement.innerHTML = "<h4>" + task.task + "</h4><p>" + task.description + "</p><p><strong>Due: " + formatDate(task.dueDate) + "</strong></p><hr>";
-                        tasksElement.appendChild(taskElement);
-                    });
-                })
-                .catch(error => console.log('error', error));
+		.then(response => response.text())
+            	.then(result => alert(JSON.parse(result).body))
+        	.catch(error => console.log('error', error));
         }
 
         function formatDate(dateString) {
