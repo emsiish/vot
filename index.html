@@ -92,7 +92,10 @@ body {
 
             fetch("https://7lvdl2bcmi.execute-api.us-east-1.amazonaws.com/dev", requestOptions)
 		.then(response => response.text())
-            	.then(result => alert(JSON.parse(result).body))
+            	.then(result => {
+			alert(JSON.parse(result).body)
+			document.getElementById("form").reset();
+		})
         	.catch(error => console.log('error', error));
         }
 
@@ -105,7 +108,9 @@ body {
             return new Date(dateString).toLocaleDateString(undefined, options);
         }
 
-        function showAllTasks() {
+        function showHideAllTasks() {
+		var checkDiv = document.getElementById('tasks');
+		if(checkDiv.innerHTML === "") {
             var requestOptions = {
                 method: 'GET',
                 redirect: 'follow'
@@ -118,6 +123,8 @@ body {
                     tasksElement.innerHTML = "";
                     var taskList = JSON.parse(result.body);
                     taskList.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
+		    var button = document.getElementById("showHideAll");
+		    button.textContent = "Hide all";
                     taskList.forEach(task => {
                         var taskElement = document.createElement('div');
                         taskElement.innerHTML = "<h4>" + task.task + "</h4><p>" + task.description + "</p><p><strong>Due: " + formatDate(task.dueDate) + "</strong></p><hr>";
@@ -125,6 +132,12 @@ body {
                     });
                 })
                 .catch(error => console.log('error', error));
+		}
+		else {
+			var button = document.getElementById("showHideAll");
+			button.textContent = "Show all";
+			checkDiv.innerHTML = "";
+		}
         }
     </script>
 </head>
@@ -134,14 +147,16 @@ body {
     <div class="jumbotron">
         <h1 class="display-4">Add Task</h1>
         <br>
+	<form id="form">
         <input id="task" class="form-control" placeholder="Task">
         <br><br><br>
         <textarea id ="description" class="form-control" placeholder="Description if needed"></textarea>
         <br><br>
 	<input id="dueDate" class="form-control" type="date">
         <br><br>
-        <button id="add" class="btn btn-success" onclick="callAPI(document.getElementById('task').value, document.getElementById('description').value)">Add</button>
-        <button id="showAll" class="btn btn-success" onclick="showAllTasks()">Show All</button>
+	</form>
+        <button type="submit" id="add" class="btn btn-success" onclick="callAPI(document.getElementById('task').value, document.getElementById('description').value)">Add</button>
+        <button id="showHideAll" class="btn btn-success" onclick="showHideAllTasks()">Show all</button>
     </div>
     <div id="tasks">
 
